@@ -1,5 +1,8 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for,redirect, flash
 app = Flask(__name__)  #contains the app name
+from forms import RegistrationForm, LoginForm
+
+app.config['SECRET_KEY'] = 'f202998cbb41cf5580b126399c162fdb'
 
 posts = [
     {
@@ -18,15 +21,36 @@ posts = [
 
 
 @app.route("/")
-@app.route("/home")   #routing for page
+@app.route("/home")
 def home():
     return render_template('home.html', posts=posts)
 
 
 @app.route("/about")
 def about():
-    return render_template('about.html', title='About')  #returning rendered templates
+    return render_template('about.html', title='About')
 
 
-if __name__ == '__main__':   #run flask app easily by --> python appname
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('home'))
+    return render_template('register.html', title='Register', form=form)
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
+            flash('You have been logged in!', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check username and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+
+
+if __name__ == '__main__':
     app.run(debug=True)
