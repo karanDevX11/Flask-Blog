@@ -46,6 +46,9 @@ Welcome to the **Flask Blog API**! 🚀 This powerful and simple blog applicatio
    cd Flask-Blog
    ```
 
+**Install Dependencies**
+pip install -r requirements.txt
+
 **run in terminal:**
 python run.py
 Access the API on http://127.0.0.1:5000.
